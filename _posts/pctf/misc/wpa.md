@@ -1,0 +1,52 @@
+# WPA
+
+> Learning about [aircrack](https://www.aircrack-ng.org/).
+
+## File
+
+The pcap consists of 888 packets using protocol `802.11`, noticing `Key`, `Acknowledgement` and `Authentication` packets (and given the title of this challenge), we decide to run it through `aircrack`.
+
+## Attack
+
+`aircrack` needs to be given a word list and `rockyou.txt` is a great candidate. Indeed, `rockyou.txt` is a popular compilation of leaked passwords.
+
+```
+$ aircrack-ng -w rockyou.txt savedcap.cap
+
+Opening savedcap.capase wait...
+Read 888 packets.
+
+   #  BSSID              ESSID                     Encryption
+
+   1  52:E2:4D:0A:A6:36  Pctf wifi challenge       WPA (1 handshake)
+
+Choosing first network as target.
+
+Opening savedcap.capase wait...
+Read 888 packets.
+
+1 potential targets
+
+                              Aircrack-ng 1.5.2
+
+      [00:00:00] 6120/7120714 keys tested (9665.44 k/s)
+
+      Time left: 12 minutes, 16 seconds                          0.09%
+
+                           KEY FOUND! [ qazwsxedc ]
+
+
+      Master Key     : 80 BE 3E 9E C4 BC 60 8C ED E6 40 BD DF 70 FE E1
+                       9F 3D BA 29 A1 C9 E4 C3 EC C2 A3 8B 84 1A AC 2B
+
+      Transient Key  : E7 E7 14 2D 60 C9 EE 49 BC C1 04 19 48 30 4B 4C
+                       40 B9 66 D4 BC 1E BD 12 CD 77 0E 20 7B 78 35 28
+                       7F 54 8B 44 3A E3 72 EB 5E 46 AC CE 2B 28 1F C8
+                       1E F1 53 B0 3F C4 A1 D4 32 AB 38 83 9A E7 9B 03
+
+      EAPOL HMAC     : 4B 42 21 CA DD 22 82 EE 83 2A AA 6E 1B 05 29 5E
+```
+
+# Flag
+
+`PCTF{qazwsxedc}`
