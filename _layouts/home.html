@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+
+  {%- include head.html -%}
+
+  <body>
+
+    <div style="display: flex; align-items: center; flex-direction: column;">
+        <img src="/assets/basilics_transparent.png" height="500px" width="500px" style="border-radius: 50%;">
+        <h1 class="site-title" style="color: #f3f9e2;font-size: 75px; margin-top: -100px">
+            BasiliCS
+        </h1>
+        <h2 class="site-title" style="color: #f3f9e2;">
+            CentraleSupélec CTF team
+        </h2>
+    </div>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="home">
+
+            {{ content }}
+
+            {%- if site.posts.size > 0 -%}
+              <h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
+              <ul class="post-list">
+                {%- for post in site.posts -%}
+                <li>
+                  {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+                  <span class="post-meta">{{ post.date | date: date_format }}</span>
+                  <h3>
+                    <a class="post-link" href="{{ post.url | relative_url }}">
+                      {{ post.title | escape }}
+                    </a>
+                  </h3>
+                  {%- if site.show_excerpts -%}
+                    {{ post.excerpt }}
+                  {%- endif -%}
+                </li>
+                {%- endfor -%}
+              </ul>
+
+            {%- endif -%}
+
+          </div>
+      </div>
+    </main>
+
+    {%- include footer.html -%}
+
+  </body>
+
+</html>
