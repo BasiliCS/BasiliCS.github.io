@@ -1,10 +1,12 @@
 ---
 layout: post
-title: "Bad documentation"
 date: 2023-09-12 12:00:00 +0200
+title: "Bad documentation"
 ---
 
 In this challenge we need to find a password that was apparently leaked on github.
+
+<!--more-->
 
 ## Vulnerability
 

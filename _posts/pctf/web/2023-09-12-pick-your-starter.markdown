@@ -1,8 +1,12 @@
 ---
 layout: post
-title: "Pick your starter"
 date: 2023-09-12 12:00:00 +0200
+title: "Pick your starter"
 ---
+
+In this challenge, we exploit a jinja template injection to get RCE.
+
+<!--more-->
 
 We have a website which displays pokemon
 
