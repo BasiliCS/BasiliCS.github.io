@@ -6,11 +6,11 @@ date: 2023-09-12 12:00:00 +0200
 
 We have a website which displays pokemon
 
-![Alt text](https://raw.githubusercontent.com/BasiliCS/writeups/pctf/pctf/web/pick-your-starter-0.png)
+![Alt text](/assets/pctf/pick-your-starter-0.png)
 
 The server header reports `Werkzeug` so we tried the `/console` endpoint. (checkout `debug=True` shell that `Werkzeug` offers and was behind the [2015 Patreon Hack](https://labs.detectify.com/2015/10/02/how-patreon-got-hacked-publicly-exposed-werkzeug-debugger/))
 
-![](https://raw.githubusercontent.com/BasiliCS/writeups/pctf/pctf/web/pick-your-starter-1.png)
+![](/assets/pctf/pick-your-starter-1.png)
 
 ## Vulnerability
 
