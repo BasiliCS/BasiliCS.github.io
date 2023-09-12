@@ -1,6 +1,13 @@
-# Flag finder
+---
+layout: post
+date: 2023-09-12 18:00:00 +0200
+title: "Flag finder"
+excerpt_separator: <!--more-->
+---
 
 In this challenge, we are tasked with guessing a flag using a `nectcat` service.
+
+<!--more-->
 
 This is less of a _cybersecurity_ challenge and more of a learning to use `netcat` one.
 
