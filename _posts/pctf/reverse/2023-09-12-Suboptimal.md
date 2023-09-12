@@ -33,7 +33,7 @@ Let's see *check_equals*
 
 ![Alt text](/assets/pctf/suboptimal-3.png)
 
-So this program compares the transformed string to another one *xk|nF{quxzwkgzgwx|quitH*
+So this program compares the transformed string to another one ```xk|nF{quxzwkgzgwx|quitH```
 
 The comparison is made char by char and, more importantly, when a comparison failed, the char of the transformed string is printed. Therefore we could bruteforce the flag char by char.
 
