@@ -24,16 +24,17 @@ description: >- # this means to ignore newlines until "baseurl:"
   CentraleSupélec CTF team
 baseurl: "/BasiliCS.gihub.io" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
-github_username: jekyll
-
-# plugins:
-#   - jekyll-remote-theme
 
 remote_theme: jekyll/minima
 
 minima:
   skin: dark
+
+plugins:
+  - jekyll-remote-theme
+
+exclude:
+  - Gemfile.lock
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
