@@ -1,6 +1,6 @@
 ---
 layout: post
-date: 2023-09-25 12:00:00 +0200
+date: 2023-09-25 08:00:00 +0200
 title: "Ottersec is a cat"
 excerpt_separator: <!--more-->
 ---
