@@ -1,6 +1,8 @@
 ---
+author: Devilsharu
 layout: post
 date: 2023-09-12 22:14:00 +0200
+tags: reverse brute-force pctf
 title: "Suboptimal"
 excerpt_separator: <!--more-->
 ---

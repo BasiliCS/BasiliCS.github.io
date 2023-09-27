@@ -1,6 +1,8 @@
 ---
+author: Devilsharu
 layout: post
 date: 2023-09-12 21:52:00 +0200
+tags: forensics pctf
 title: "Evil Monkey 1"
 excerpt_separator: <!--more-->
 ---

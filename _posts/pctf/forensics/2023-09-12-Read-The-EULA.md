@@ -1,6 +1,8 @@
 ---
+author: Devilsharu
 layout: post
 date: 2023-09-12 22:05:00 +0200
+tags: forensics network-analysis pctf
 title: "Read The EULA"
 excerpt_separator: <!--more-->
 ---
