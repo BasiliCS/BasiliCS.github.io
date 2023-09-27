@@ -1,1 +1,8 @@
-**/__site
+# Local site
+**/_site
+
+# Utilities
+scripts
+
+# Editor config
+.vscode

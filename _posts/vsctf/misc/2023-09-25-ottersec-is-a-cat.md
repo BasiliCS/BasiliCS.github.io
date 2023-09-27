@@ -1,6 +1,8 @@
 ---
+author: Garfield1002
 layout: post
 date: 2023-09-25 08:00:00 +0200
+tags: misc ml vsctf
 title: "Ottersec is a cat"
 excerpt_separator: <!--more-->
 ---

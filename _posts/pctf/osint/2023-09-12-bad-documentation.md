@@ -1,7 +1,9 @@
 ---
+author: Garfield1002
 layout: post
 date: 2023-09-12 12:00:00 +0200
 title: "Bad documentation"
+tags: misc beginner pctf
 excerpt_separator: <!--more-->
 ---
 
