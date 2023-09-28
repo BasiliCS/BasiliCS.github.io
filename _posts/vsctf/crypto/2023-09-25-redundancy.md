@@ -10,6 +10,8 @@ excerpt_separator: <!--more-->
 In this challenge we need to break RSA...
 <!--more-->
 
+{% include math.html %}
+
 Well a vulnerable version.
 
 ## The code

