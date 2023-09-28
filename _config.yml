@@ -31,6 +31,7 @@ minima:
   skin: dark
 
 plugins:
+  - jekyll-sitemap
   - jekyll-remote-theme
 
 exclude:
