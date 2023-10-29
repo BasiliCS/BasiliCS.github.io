@@ -44,3 +44,5 @@ Well done, you have successfully neutralized the enemy. Here is your flag: ECW{B
 
 FLAG: `ECW{BADCE115}`
 
+{% endraw %}
+

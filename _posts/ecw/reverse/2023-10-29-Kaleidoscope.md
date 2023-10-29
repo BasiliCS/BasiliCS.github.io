@@ -149,3 +149,5 @@ Because of little endianness, the result will be reversed.
 `ECW{w31rdtu4l_m4ch1n3s_g00d_fun}`
 
 If you want to check out the complete python script used for this challenge, head to ![https://github.com/BasiliCS](https://github.com/BasiliCS)
+
+{% endraw %}
