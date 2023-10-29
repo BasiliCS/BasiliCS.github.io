@@ -1,9 +1,9 @@
 ---
 author: micronoyau
 layout: post
-date: 2023-10-29 17:00:00 +0200
+date: 2023-10-29 19:00:00 +0200
 tags: reverse ecw
-title: "Exploit-Education Phoenix format string 4"
+title: "Interactive reverse"
 excerpt_separator: <!--more-->
 ---
 
