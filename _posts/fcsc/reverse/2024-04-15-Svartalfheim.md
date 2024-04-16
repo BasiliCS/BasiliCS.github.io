@@ -2,12 +2,12 @@
 author: micronoyau
 layout: post
 date: 2024-04-15 22:00:00 +0200
-tags: reverse elf
+tags: reverse elf fcsc
 title: "Svartelfheim"
 excerpt_separator: <!--more-->
 ---
 
-This challenge was pretty fun and gave me the opportunity to learn more about ELF files. It was part of the difficult reverse challenges.
+This challenge was pretty fun and was a great opportunity to learn more about ELF files. It was part of the difficult reverse challenges of FCSC 2024.
 
 ## First run
 
