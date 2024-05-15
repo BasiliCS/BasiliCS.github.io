@@ -10,7 +10,7 @@ excerpt_separator: <!--more-->
 This android challenge is part of a series of challenges offered by *OWASP Mobile Application Security*
 
 
-![](/assets/OWASP-MASTG/unck1-0.png)
+![](/assets/OWASP-MASTG/unck1-0.jpg)
 
 In this one, the flag is a secret string hidden in the app.
 
@@ -20,7 +20,7 @@ In this one, the flag is a secret string hidden in the app.
 
 First of all, let's take a look at the application. 
 
-![](/assets/OWASP-MASTG/unck1-1.png)
+![](/assets/OWASP-MASTG/unck1-1.jpg)
 
 In the background, it seems like there is text field that's waiting for the secret string. That's probably where we should type the flag.
 
@@ -28,14 +28,14 @@ However, it also looks like the app detected that my emulator is rooted.
 
 Let's go with our good old mate Jadx !
 
-![](/assets/OWASP-MASTG/unck1-2.png)
+![](/assets/OWASP-MASTG/unck1-2.jpg)
 
 
 The dex file is much obfuscated, so it should ease our way to the flag.
 
 First, let's see the manifest.
 
-![](/assets/OWASP-MASTG/unck1-3.png)
+![](/assets/OWASP-MASTG/unck1-3.jpg)
 
 First thing we can notice, and that could be useful in the future, is the package name : `owasp.mstg.uncrackable1`
 
@@ -45,7 +45,7 @@ Secondly, we can see that the activty that the application "starts" with the act
 
 MainActivity is pretty straight forward :
 
-![](/assets/OWASP-MASTG/unck1-4.png)
+![](/assets/OWASP-MASTG/unck1-4.jpg)
 
 There is a `verify` method that obviously checks our input and matches it with the secret string.
 The root detection is done in `onCreate` and then `MainActivity.a` is potentially called to disallow us from using the app.
@@ -54,7 +54,7 @@ The root detection is done in `onCreate` and then `MainActivity.a` is potentiall
 
 `verify` calls `a.a` with the user input as an argument.
 
-![](/assets/OWASP-MASTG/unck1-5.png)
+![](/assets/OWASP-MASTG/unck1-5.jpg)
 
 
 `a.a` does a few thing : 
@@ -66,7 +66,7 @@ We can immediatly see that `a.b` only converts the argument from an hexadecimal 
 
 Now, we can get into `a.a.a` :
 
-![](/assets/OWASP-MASTG/unck1-6.png)
+![](/assets/OWASP-MASTG/unck1-6.jpg)
 
 
 Well, a bit disapointing...
@@ -127,4 +127,4 @@ We then make frida spawn the app (instead of attaching to it later because it wo
 
 Now, we can believe !
 
-![](/assets/OWASP-MASTG/unck1-7.png)
+![](/assets/OWASP-MASTG/unck1-7.jpg)
